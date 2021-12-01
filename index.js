@@ -1,11 +1,7 @@
-﻿let scale = 1
-let colors = '█▓▒░~!@#$%^&*()_+`1234567890-=[]\{}|;\':",./<>? '
+﻿let colors = ' █▓▒░~!@#$%^&*()_+`1234567890-=[]\{}|;\':",./<>?~ '
 //let utf8 = ["█", "▓"] //█, ▓, ▒, ░
 //colors = [...utf8, ...colors.split(''), ' ']
 function prop(oldNum, newmin, newmax, oldmin, oldmax) {return ((oldNum - oldmin) / (oldmax - oldmin)) * (newmax - newmin) + newmin;}
-
-let canvas = document.createElement('CANVAS')
-let ctx = canvas.getContext('2d')
 
 const gpu = new GPU();
 gpu.addFunction(prop)
@@ -23,14 +19,17 @@ function render (img) {
     let output = document.getElementById('out')
     output.innerText = ""
     img.onload = () => {
-		canvas.height = img.height*scale*0.66
+		let canvas = document.createElement('CANVAS')
+		let ctx = canvas.getContext('2d')
+		let scale = +scaleI.value
+		canvas.height = img.height*scale*(2/3)
 		canvas.width = img.width*scale
-        ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
-        getColorIndexes.setOutput({x: canvas.width, y: canvas.height})
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height) 
         let img2 = new Image()
         img2.src = canvas.toDataURL()
         img2.onload = function () {
-			getColorIndexes.setOutput({x: img2.width, y: img2.height})
+			console.info(img.width, img2.width, canvas.width)
+			getColorIndexes.setOutput({x: canvas.width, y: canvas.height})
             let c  = getColorIndexes(img2, colors.length)
             for (let y in c) {
                 let k = c.length-1
